@@ -1,0 +1,72 @@
+plugins {
+    id("fabric-loom") version "1.7.4"
+    `maven-publish`
+}
+
+repositories {
+    mavenCentral()
+}
+
+loom {
+    splitEnvironmentSourceSets()
+
+    mods {
+        register("fat-cats") {
+            sourceSet(sourceSets.main.get())
+            sourceSet(sourceSets.getByName("client"))
+        }
+    }
+}
+
+fabricApi {
+    configureDataGeneration {
+        client = true
+        modId = "fat-cats"
+    }
+}
+
+dependencies {
+    minecraft("com.mojang:minecraft:${providers.gradleProperty("minecraft_version").get()}")
+    mappings(loom.officialMojangMappings())
+    modImplementation("net.fabricmc:fabric-loader:${providers.gradleProperty("loader_version").get()}")
+
+    // Fabric API
+    modImplementation("net.fabricmc.fabric-api:fabric-api:${providers.gradleProperty("fabric_version").get()}")
+}
+
+tasks.processResources {
+    val version = version
+    inputs.property("version", version)
+
+    filesMatching("fabric.mod.json") {
+        expand("version" to version)
+    }
+}
+
+tasks.withType<JavaCompile>().configureEach {
+    options.release.set(21)
+}
+
+java {
+    withSourcesJar()
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+tasks.jar {
+    val projectName = project.name
+    inputs.property("projectName", projectName)
+
+    from("LICENSE") {
+        rename { "${it}_$projectName" }
+    }
+}
+
+publishing {
+    publications {
+        register<MavenPublication>("mavenJava") {
+            from(components["java"])
+        }
+    }
+    repositories {}
+}
