@@ -20,7 +20,6 @@ loom {
 
 fabricApi {
     configureDataGeneration {
-        client = true
         modId = "fat-cats"
     }
 }
@@ -31,7 +30,7 @@ dependencies {
     modImplementation("net.fabricmc:fabric-loader:${providers.gradleProperty("loader_version").get()}")
 
     // Fabric API
-    modImplementation("net.fabricmc.fabric-api:fabric-api:${providers.gradleProperty("fabric_version").get()}")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:${providers.gradleProperty("fabric_api_version").get()}")
 }
 
 tasks.processResources {

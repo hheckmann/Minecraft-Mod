@@ -1,6 +1,6 @@
 # Fat Cats
 
-WIP
+WIP - fat cats mod
 
 ## Setup
 
